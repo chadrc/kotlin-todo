@@ -10,6 +10,6 @@ fun main(args: Array<String>) {
         }
     }
 
-    // Suppressing defineModule not a function error until it can be fixed
+    // Suppressing "defineModule not a function" error until it can be fixed
     Kotlin.defineModule = {module: String -> module}
 }
