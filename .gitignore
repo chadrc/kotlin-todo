@@ -71,3 +71,7 @@ gradle-app.setting
 ### Idea
 
 .idea/
+
+### Web
+
+dist/
