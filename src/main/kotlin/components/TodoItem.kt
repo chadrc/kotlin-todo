@@ -29,7 +29,11 @@ class TodoItem: RComponent<TodoItemProps, RState>() {
     }
 }
 
-class TodoItemProps(var text: String, var completed: Boolean, var onClick: () -> Unit): RProps
+class TodoItemProps(
+        var text: String,
+        var completed: Boolean,
+        var onClick: () -> Unit
+) : RProps
 
 fun RBuilder.todoItem(text: String, completed: Boolean, onClick: () -> Unit) = child(TodoItem::class) {
     attrs.text = text
