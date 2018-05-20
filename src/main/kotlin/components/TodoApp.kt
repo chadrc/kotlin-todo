@@ -73,19 +73,7 @@ class TodoApp : RComponent<RProps, TodoAppState>() {
 
                     ul {
                         selectedTodoCollection.todos.mapIndexed { index: Int, todo: Todo ->
-                            li {
-                                label {
-                                    +todo.text
-
-                                    input {
-                                        attrs {
-                                            type = InputType.checkBox
-                                            checked = todo.completed
-                                            onClickFunction = { toggleComplete(index)}
-                                        }
-                                    }
-                                }
-                            }
+                            todoItem(todo.text, todo.completed, { toggleComplete(index) })
                         }
                     }
                 }
@@ -99,4 +87,4 @@ class TodoAppState(
         var selectedTodoCollectionIndex: Int
 ) : RState
 
-fun RBuilder.TodoApp() = child(TodoApp::class) {}
+fun RBuilder.todoApp() = child(TodoApp::class) {}
