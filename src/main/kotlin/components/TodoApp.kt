@@ -2,7 +2,6 @@ package components
 
 import Todo
 import TodoCollection
-import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.*
 
@@ -24,7 +23,7 @@ class TodoApp : RComponent<RProps, TodoAppState>() {
     private val selectedTodoCollection: TodoCollection
         get() = this.state.todoCollections[this.state.selectedTodoCollectionIndex]
 
-    private fun selectTodo(index: Int) {
+    private fun selectTodoCollection(index: Int) {
         setState {
             selectedTodoCollectionIndex = index
         }
@@ -46,23 +45,7 @@ class TodoApp : RComponent<RProps, TodoAppState>() {
                 +"Todo App"
             }
 
-            aside {
-                h3 {
-                    +"Collections"
-                }
-
-                ul {
-                    state.todoCollections.mapIndexed { index: Int, collection: TodoCollection ->
-                        li {
-                            +collection.name
-
-                            attrs {
-                                onClickFunction = { selectTodo(index) }
-                            }
-                        }
-                    }
-                }
-            }
+            todoCollectionList(state.todoCollections, { index: Int -> selectTodoCollection(index)})
 
             if (state.selectedTodoCollectionIndex != -1) {
                 section {
