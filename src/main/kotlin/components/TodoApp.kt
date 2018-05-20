@@ -2,7 +2,6 @@ package components
 
 import Todo
 import TodoCollection
-import kotlinx.html.InputType
 import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.*
