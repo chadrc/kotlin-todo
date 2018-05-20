@@ -1,0 +1,1 @@
+class Todo(var text: String, var completed: Boolean = false)

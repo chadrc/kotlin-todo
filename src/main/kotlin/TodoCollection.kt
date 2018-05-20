@@ -1,0 +1,1 @@
+class TodoCollection(var name: String, val todos: List<Todo> = ArrayList())
