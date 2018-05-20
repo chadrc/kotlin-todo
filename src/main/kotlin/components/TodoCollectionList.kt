@@ -1,6 +1,7 @@
 package components
 
 import TodoCollection
+import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
 import react.RBuilder
 import react.RComponent
@@ -10,6 +11,8 @@ import react.dom.aside
 import react.dom.h3
 import react.dom.li
 import react.dom.ul
+import styled.css
+import styled.styledUl
 
 class TodoCollectionList : RComponent<TodoCollectionListProps, RState>() {
     override fun RBuilder.render() {
@@ -18,7 +21,12 @@ class TodoCollectionList : RComponent<TodoCollectionListProps, RState>() {
                 +"Collections"
             }
 
-            ul {
+            styledUl {
+                css {
+                    listStyleType = ListStyleType.none
+                    padding(0.px)
+                }
+
                 props.collectionList.mapIndexed { index: Int, collection: TodoCollection ->
                     li {
                         +collection.name

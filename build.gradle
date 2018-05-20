@@ -34,6 +34,7 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
     compile 'org.jetbrains:kotlin-react:16.3.1-pre.28-kotlin-1.2.30'
+    compile 'org.jetbrains:kotlin-styled:1.0.0-pre.28-kotlin-1.2.30'
     compile 'org.jetbrains:kotlin-react-dom:16.3.1-pre.28-kotlin-1.2.30'
     testCompile "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
     testCompile group: 'junit', name: 'junit', version: '4.12'
@@ -43,8 +44,11 @@ kotlinFrontend {
     downloadNodeJsVersion = "latest"
 
     npm {
-        dependency("react")
-        dependency("react-dom")
+        dependency "react"
+        dependency "react-dom"
+        dependency "style-loader"
+        dependency "styled-components"
+        dependency "inline-style-prefixer"
     }
 
     webpackBundle {

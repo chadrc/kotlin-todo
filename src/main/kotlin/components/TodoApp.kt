@@ -2,8 +2,13 @@ package components
 
 import Todo
 import TodoCollection
+import kotlinx.css.*
 import react.*
 import react.dom.*
+import styled.css
+import styled.styledDiv
+import styled.styledSection
+import styled.styledUl
 
 class TodoApp : RComponent<RProps, TodoAppState>() {
 
@@ -40,22 +45,52 @@ class TodoApp : RComponent<RProps, TodoAppState>() {
     }
 
     override fun RBuilder.render() {
-        section {
+        styledSection {
+            css {
+                display = Display.flex
+                flexDirection = FlexDirection.column
+                alignItems = Align.center
+
+                width = 80.pct
+                margin(LinearDimension.auto)
+            }
+
             h1 {
                 +"Todo App"
             }
 
-            todoCollectionList(state.todoCollections, { index: Int -> selectTodoCollection(index)})
+            styledSection {
+                css {
+                    display = Display.flex
+                    width = 100.pct
+                }
 
-            if (state.selectedTodoCollectionIndex != -1) {
-                section {
-                    h3 {
-                        +selectedTodoCollection.name
+                styledDiv {
+                    css {
+                        flexGrow = 1.0
                     }
 
-                    ul {
-                        selectedTodoCollection.todos.mapIndexed { index: Int, todo: Todo ->
-                            todoItem(todo.text, todo.completed, { toggleComplete(index) })
+                    todoCollectionList(state.todoCollections, { index: Int -> selectTodoCollection(index) })
+                }
+
+                styledSection {
+                    css {
+                        flexGrow = 2.0
+                    }
+
+                    if (state.selectedTodoCollectionIndex != -1) {
+                        h3 {
+                            +selectedTodoCollection.name
+                        }
+
+                        styledUl {
+                            css {
+                                paddingLeft = 20.px
+                            }
+
+                            selectedTodoCollection.todos.mapIndexed { index: Int, todo: Todo ->
+                                todoItem(todo.text, todo.completed, { toggleComplete(index) })
+                            }
                         }
                     }
                 }
