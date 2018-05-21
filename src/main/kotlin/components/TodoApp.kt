@@ -1,49 +1,16 @@
 package components
 
-import Todo
-import TodoCollection
 import kotlinx.css.*
-import react.*
-import react.dom.*
+import react.RBuilder
+import react.RComponent
+import react.RProps
+import react.RState
+import react.dom.h1
 import styled.css
 import styled.styledDiv
 import styled.styledSection
-import styled.styledUl
 
-class TodoApp : RComponent<RProps, TodoAppState>() {
-
-    init {
-        val collections: ArrayList<TodoCollection> = ArrayList()
-        val startingTodos: ArrayList<Todo> = ArrayList()
-
-        startingTodos.add(Todo("Make Coffee"))
-        startingTodos.add(Todo("Eat Breakfast"))
-        startingTodos.add(Todo("Pack Lunch"))
-
-        collections.add(TodoCollection("Morning Routine", startingTodos))
-
-        state = TodoAppState(collections, -1)
-    }
-
-    private val selectedTodoCollection: TodoCollection
-        get() = this.state.todoCollections[this.state.selectedTodoCollectionIndex]
-
-    private fun selectTodoCollection(index: Int) {
-        setState {
-            selectedTodoCollectionIndex = index
-        }
-    }
-
-    private fun toggleComplete(index: Int) {
-        val collection = selectedTodoCollection
-        val todo = collection.todos[index]
-        todo.completed = !todo.completed
-
-        setState {
-            todoCollections = state.todoCollections
-        }
-    }
-
+class TodoApp : RComponent<RProps, RState>() {
     override fun RBuilder.render() {
         styledSection {
             css {
@@ -70,7 +37,7 @@ class TodoApp : RComponent<RProps, TodoAppState>() {
                         flexGrow = 1.0
                     }
 
-                    todoCollectionList(state.todoCollections, { index: Int -> selectTodoCollection(index) })
+                    todoCollectionList()
                 }
 
                 styledSection {
@@ -78,30 +45,11 @@ class TodoApp : RComponent<RProps, TodoAppState>() {
                         flexGrow = 2.0
                     }
 
-                    if (state.selectedTodoCollectionIndex != -1) {
-                        h3 {
-                            +selectedTodoCollection.name
-                        }
-
-                        styledUl {
-                            css {
-                                paddingLeft = 20.px
-                            }
-
-                            selectedTodoCollection.todos.mapIndexed { index: Int, todo: Todo ->
-                                todoItem(todo.text, todo.completed, { toggleComplete(index) })
-                            }
-                        }
-                    }
+                    selectedTodo()
                 }
             }
         }
     }
 }
-
-class TodoAppState(
-        var todoCollections: ArrayList<TodoCollection>,
-        var selectedTodoCollectionIndex: Int
-) : RState
 
 fun RBuilder.todoApp() = child(TodoApp::class) {}
