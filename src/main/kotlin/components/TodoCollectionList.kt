@@ -1,6 +1,6 @@
 package components
 
-import Store
+import TodoStore
 import TodoCollection
 import connect
 import kotlinx.css.ListStyleType
@@ -50,7 +50,7 @@ class TodoCollectionListProps(
         var onListSelected: ((index: Int) -> Unit)?
 ) : RProps
 
-fun RBuilder.todoCollectionList() = connect(TodoCollectionList::class, { store: Store ->
+fun RBuilder.todoCollectionList() = connect(TodoCollectionList::class, { store: TodoStore ->
     TodoCollectionListProps(
             store.todoCollections,
             { index: Int -> store.selectTodoCollection(index) }

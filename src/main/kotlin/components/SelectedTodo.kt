@@ -2,7 +2,7 @@ package components
 
 import Todo
 import TodoCollection
-import Store
+import TodoStore
 import connect
 import kotlinx.css.px
 import react.RBuilder
@@ -38,7 +38,7 @@ class SelectedTodoProps(
         val toggleComplete: (index: Int) -> Unit
 ) : RProps
 
-fun RBuilder.selectedTodo() = connect(SelectedTodo::class, { store: Store ->
+fun RBuilder.selectedTodo() = connect(SelectedTodo::class, { store: TodoStore ->
     SelectedTodoProps(
             store.selectedTodoCollection,
             { index: Int -> store.toggleComplete(index) }
