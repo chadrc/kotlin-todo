@@ -26,24 +26,27 @@ class Store {
     fun addListener(listener: StoreListener) = listeners.add(listener)
     fun removeListener(listener: StoreListener) = listeners.remove(listener)
 
-    fun selectTodoCollection(index: Int) {
+    fun selectTodoCollection(index: Int) = action({
         selectedTodoCollectionIndex = index
-        notifyListeners()
-    }
+    })
 
-    fun toggleComplete(index: Int) {
+    fun toggleComplete(index: Int) = action({
         val collection = selectedTodoCollection
         if (collection != null) {
             val todo = collection.todos[index]
             todo.completed = !todo.completed
-            notifyListeners()
         }
-    }
+    })
 
     private fun notifyListeners() {
         for (listener in listeners) {
             listener()
         }
+    }
+
+    private fun action(func: () -> Unit) {
+        func()
+        notifyListeners()
     }
 }
 
