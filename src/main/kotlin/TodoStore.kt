@@ -4,6 +4,7 @@ import store.StoreConnector
 class TodoStore: Store() {
     var todoCollections: ArrayList<TodoCollection> = ArrayList()
     var selectedTodoCollectionIndex: Int = -1
+    var newCollectionName: String = ""
 
     val selectedTodoCollection: TodoCollection?
         get() = if (selectedTodoCollectionIndex == -1) null else todoCollections[selectedTodoCollectionIndex]
@@ -17,6 +18,16 @@ class TodoStore: Store() {
         startingTodos.add(Todo("Pack Lunch"))
 
         todoCollections.add(TodoCollection("Morning Routine", startingTodos))
+    }
+
+    fun updateNewCollectionName(name: String) = action {
+        newCollectionName = name
+    }
+
+    fun createNewCollection() = action {
+        val newCollection = TodoCollection(newCollectionName)
+        newCollectionName = ""
+        todoCollections.add(newCollection)
     }
 
     fun selectTodoCollection(index: Int) = action({

@@ -5,23 +5,43 @@ import connector
 import kotlinx.css.ListStyleType
 import kotlinx.css.padding
 import kotlinx.css.px
+import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.js.onSubmitFunction
+import org.w3c.dom.HTMLInputElement
 import react.RBuilder
 import react.RComponent
 import react.RProps
 import react.RState
-import react.dom.aside
-import react.dom.h3
-import react.dom.li
+import react.dom.*
 import styled.css
 import styled.styledUl
 
-class TodoCollectionList: RComponent<TodoCollectionListProps, RState>() {
+class TodoCollectionList : RComponent<TodoCollectionListProps, RState>() {
     override fun RBuilder.render() {
 
         aside {
             h3 {
                 +"Collections"
+            }
+
+            form {
+                attrs {
+                    onSubmitFunction = {
+                        it.preventDefault()
+                        props.createNewCollection()
+                    }
+                }
+
+                input {
+                    attrs {
+                        onChangeFunction = {
+                            val value = (it.target as HTMLInputElement).value
+                            props.updateNewCollectionName(value)
+                        }
+                        value = props.newCollectionName
+                    }
+                }
             }
 
             styledUl {
@@ -46,12 +66,18 @@ class TodoCollectionList: RComponent<TodoCollectionListProps, RState>() {
 
 class TodoCollectionListProps(
         var collectionList: ArrayList<TodoCollection> = ArrayList(),
-        var onListSelected: ((index: Int) -> Unit) = {}
+        var onListSelected: ((index: Int) -> Unit) = {},
+        var newCollectionName: String = "",
+        var updateNewCollectionName: (name: String) -> Unit = {},
+        var createNewCollection: () -> Unit = {}
 ) : RProps
 
 fun RBuilder.todoCollectionList() = connector.connect(this, TodoCollectionList::class, { store ->
     TodoCollectionListProps(
             store.todoCollections,
-            { index: Int -> store.selectTodoCollection(index) }
+            { index: Int -> store.selectTodoCollection(index) },
+            store.newCollectionName,
+            { name: String -> store.updateNewCollectionName(name) },
+            { store.createNewCollection() }
     )
 })
