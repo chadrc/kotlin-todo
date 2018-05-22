@@ -30,3 +30,6 @@ class TodoStore: Store() {
         }
     })
 }
+
+val todoStore = TodoStore()
+val connector = StoreConnector(todoStore)

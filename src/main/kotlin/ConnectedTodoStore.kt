@@ -1,36 +1,44 @@
 import react.*
-import store.*
+import store.Store
+import store.StoreListener
 import kotlin.reflect.KClass
 
-val todoStore = TodoStore()
+class StoreConnector<S : Store>(private val store: S) {
 
-class ConnectedComponent : RComponent<ConnectedComponentProps, RState>() {
-    private val listener: StoreListener = { update() }
+    inner class ConnectedComponent : RComponent<ConnectedComponentProps, RState>() {
+        private val listener: StoreListener = { update() }
 
-    init {
-        todoStore.addListener(listener)
+        override fun componentDidMount() {
+            props.store.addListener(listener)
+        }
+
+        override fun componentWillUnmount() {
+            props.store.removeListener(listener)
+        }
+
+        private fun update() {
+            this.forceUpdate()
+        }
+
+        override fun RBuilder.render() {
+            val childProps = props.mapFunc(props.store)
+            child(props.kClass.js, childProps) {}
+        }
     }
 
-    override fun componentWillUnmount() {
-        super.componentWillUnmount()
-        todoStore.removeListener(listener)
+    inner class ConnectedComponentProps(
+            var store: S,
+            var mapFunc: (store: S) -> dynamic,
+            var kClass: KClass<dynamic>
+    ) : RProps
+
+    fun <P : RProps, C : Component<P, *>> connect(
+            receiver: RBuilder,
+            c: KClass<C>,
+            mapFunc: (store: S) -> P
+    ): ReactElement = receiver.child<dynamic, dynamic>(ConnectedComponent::class) {
+        attrs.mapFunc = mapFunc
+        attrs.kClass = c
+        attrs.store = store
     }
-
-    private fun update() {
-        this.forceUpdate()
-    }
-
-    override fun RBuilder.render() {
-        val childProps = props.mapFunc(todoStore)
-        child(props.kClass.js, childProps) {}
-    }
-}
-
-typealias MapFunction<P> = (store: TodoStore) -> P
-
-class ConnectedComponentProps(var mapFunc: MapFunction<dynamic>, var kClass: KClass<dynamic>): RProps
-
-fun <P: RProps, T: Component<P, *>> RBuilder.connect(c: KClass<T>, mapFunc: MapFunction<P>): ReactElement = child(ConnectedComponent::class) {
-    attrs.mapFunc = mapFunc
-    attrs.kClass = c
 }
