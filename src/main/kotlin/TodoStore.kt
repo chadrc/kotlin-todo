@@ -1,4 +1,5 @@
 import store.Store
+import store.StoreConnector
 
 class TodoStore: Store() {
     var todoCollections: ArrayList<TodoCollection> = ArrayList()
@@ -31,5 +32,4 @@ class TodoStore: Store() {
     })
 }
 
-val todoStore = TodoStore()
-val connector = StoreConnector(todoStore)
+val connector = StoreConnector(TodoStore())

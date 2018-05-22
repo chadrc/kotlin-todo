@@ -1,6 +1,6 @@
+package store
+
 import react.*
-import store.Store
-import store.StoreListener
 import kotlin.reflect.KClass
 
 class StoreConnector<S : Store>(private val store: S) {
