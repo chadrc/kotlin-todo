@@ -1,1 +1,1 @@
-class Todo(var text: String, var completed: Boolean = false)
+data class Todo(var text: String, var completed: Boolean = false)
