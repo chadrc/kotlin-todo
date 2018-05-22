@@ -2,45 +2,48 @@ import store.Store
 import store.StoreConnector
 
 class TodoStore : Store() {
-    var todoCollections: ArrayList<TodoCollection> = ArrayList()
-    var selectedTodoCollectionIndex: Int = -1
-    var newCollectionName: String = ""
-    var newTodoText: String = ""
+    private var _todoCollections: ArrayList<TodoCollection> = ArrayList()
+    private var _selectedTodoCollectionIndex: Int = -1
+    private var _newCollectionName: String = ""
+    private var _newTodoText: String = ""
 
+    val todoCollections: ArrayList<TodoCollection> get() = _todoCollections
+    val newCollectionName: String get() = _newCollectionName
+    val newTodoText: String get() = _newTodoText
     val selectedTodoCollection: TodoCollection?
-        get() = if (selectedTodoCollectionIndex == -1) null else todoCollections[selectedTodoCollectionIndex]
+        get() = if (_selectedTodoCollectionIndex == -1) null else _todoCollections[_selectedTodoCollectionIndex]
 
     init {
-        todoCollections = ArrayList()
+        _todoCollections = ArrayList()
         val startingTodos: ArrayList<Todo> = ArrayList()
 
         startingTodos.add(Todo("Make Coffee"))
         startingTodos.add(Todo("Eat Breakfast"))
         startingTodos.add(Todo("Pack Lunch"))
 
-        todoCollections.add(TodoCollection("Morning Routine", startingTodos))
+        _todoCollections.add(TodoCollection("Morning Routine", startingTodos))
     }
 
     fun updateNewCollectionName(name: String) = action {
-        newCollectionName = name
+        _newCollectionName = name
     }
 
     fun createNewCollection() = action {
-        todoCollections.add(TodoCollection(newCollectionName))
-        newCollectionName = ""
+        _todoCollections.add(TodoCollection(_newCollectionName))
+        _newCollectionName = ""
     }
 
     fun updateNewTodoText(text: String) = action {
-        newTodoText = text
+        _newTodoText = text
     }
 
     fun createNewTodo() = action {
-        selectedTodoCollection?.todos?.add(Todo(newTodoText))
-        newTodoText = ""
+        selectedTodoCollection?.todos?.add(Todo(_newTodoText))
+        _newTodoText = ""
     }
 
     fun selectTodoCollection(index: Int) = action {
-        selectedTodoCollectionIndex = index
+        _selectedTodoCollectionIndex = index
     }
 
     fun toggleComplete(index: Int) = action {
