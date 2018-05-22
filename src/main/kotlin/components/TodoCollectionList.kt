@@ -9,10 +9,7 @@ import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onSubmitFunction
 import org.w3c.dom.HTMLInputElement
-import react.RBuilder
-import react.RComponent
-import react.RProps
-import react.RState
+import react.*
 import react.dom.*
 import styled.css
 import styled.styledUl
