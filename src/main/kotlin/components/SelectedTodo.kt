@@ -35,7 +35,7 @@ class SelectedTodo : RComponent<SelectedTodoProps, RState>() {
 
 class SelectedTodoProps(
         val selectedTodoCollection: TodoCollection?,
-        val toggleComplete: (index: Int) -> Unit
+        val toggleComplete: (index: Int) -> Unit = {}
 ) : RProps
 
 fun RBuilder.selectedTodo() = connector.connect(this, SelectedTodo::class, { store: TodoStore ->

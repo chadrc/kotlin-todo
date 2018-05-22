@@ -30,12 +30,12 @@ class TodoCollectionList: RComponent<TodoCollectionListProps, RState>() {
                     padding(0.px)
                 }
 
-                props.collectionList?.mapIndexed { index: Int, collection: TodoCollection ->
+                props.collectionList.mapIndexed { index: Int, collection: TodoCollection ->
                     li {
                         +collection.name
 
                         attrs {
-                            onClickFunction = { props.onListSelected?.invoke(index) }
+                            onClickFunction = { props.onListSelected.invoke(index) }
                         }
                     }
                 }
@@ -45,8 +45,8 @@ class TodoCollectionList: RComponent<TodoCollectionListProps, RState>() {
 }
 
 class TodoCollectionListProps(
-        var collectionList: ArrayList<TodoCollection>?,
-        var onListSelected: ((index: Int) -> Unit)?
+        var collectionList: ArrayList<TodoCollection> = ArrayList(),
+        var onListSelected: ((index: Int) -> Unit) = {}
 ) : RProps
 
 fun RBuilder.todoCollectionList() = connector.connect(this, TodoCollectionList::class, { store ->
