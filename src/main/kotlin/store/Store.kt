@@ -1,7 +1,5 @@
 package store
 
-typealias StoreListener = () -> Unit
-
 open class Store {
 
     private val listeners: ArrayList<StoreListener> = ArrayList()
