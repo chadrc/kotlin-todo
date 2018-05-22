@@ -1,1 +1,1 @@
-class TodoCollection(var name: String, val todos: List<Todo> = ArrayList())
+class TodoCollection(var name: String, val todos: ArrayList<Todo> = ArrayList())

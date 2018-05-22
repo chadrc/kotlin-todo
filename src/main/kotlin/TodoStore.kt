@@ -1,10 +1,11 @@
 import store.Store
 import store.StoreConnector
 
-class TodoStore: Store() {
+class TodoStore : Store() {
     var todoCollections: ArrayList<TodoCollection> = ArrayList()
     var selectedTodoCollectionIndex: Int = -1
     var newCollectionName: String = ""
+    var newTodoText: String = ""
 
     val selectedTodoCollection: TodoCollection?
         get() = if (selectedTodoCollectionIndex == -1) null else todoCollections[selectedTodoCollectionIndex]
@@ -25,22 +26,30 @@ class TodoStore: Store() {
     }
 
     fun createNewCollection() = action {
-        val newCollection = TodoCollection(newCollectionName)
+        todoCollections.add(TodoCollection(newCollectionName))
         newCollectionName = ""
-        todoCollections.add(newCollection)
     }
 
-    fun selectTodoCollection(index: Int) = action({
-        selectedTodoCollectionIndex = index
-    })
+    fun updateNewTodoText(text: String) = action {
+        newTodoText = text
+    }
 
-    fun toggleComplete(index: Int) = action({
+    fun createNewTodo() = action {
+        selectedTodoCollection?.todos?.add(Todo(newTodoText))
+        newTodoText = ""
+    }
+
+    fun selectTodoCollection(index: Int) = action {
+        selectedTodoCollectionIndex = index
+    }
+
+    fun toggleComplete(index: Int) = action {
         val collection = selectedTodoCollection
         if (collection != null) {
             val todo = collection.todos[index]
             todo.completed = !todo.completed
         }
-    })
+    }
 }
 
 val connector = StoreConnector(TodoStore())

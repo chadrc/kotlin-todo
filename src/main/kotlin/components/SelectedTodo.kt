@@ -5,11 +5,16 @@ import TodoCollection
 import TodoStore
 import connector
 import kotlinx.css.px
+import kotlinx.html.js.onChangeFunction
+import kotlinx.html.js.onSubmitFunction
+import org.w3c.dom.HTMLInputElement
 import react.RBuilder
 import react.RComponent
 import react.RProps
 import react.RState
+import react.dom.form
 import react.dom.h3
+import react.dom.input
 import styled.css
 import styled.styledUl
 
@@ -18,6 +23,25 @@ class SelectedTodo : RComponent<SelectedTodoProps, RState>() {
         if (props.selectedTodoCollection != null) {
             h3 {
                 +props.selectedTodoCollection.name
+            }
+
+            form {
+                attrs {
+                    onSubmitFunction = {
+                        it.preventDefault()
+                        props.createNewTodo()
+                    }
+                }
+
+                input {
+                    attrs {
+                        onChangeFunction = {
+                            val value = (it.target as HTMLInputElement).value
+                            props.updateNewTodoText(value)
+                        }
+                        value = props.newTodoText
+                    }
+                }
             }
 
             styledUl {
@@ -35,12 +59,18 @@ class SelectedTodo : RComponent<SelectedTodoProps, RState>() {
 
 class SelectedTodoProps(
         val selectedTodoCollection: TodoCollection?,
-        val toggleComplete: (index: Int) -> Unit = {}
+        val toggleComplete: (index: Int) -> Unit = {},
+        var newTodoText: String = "",
+        var updateNewTodoText: (text: String) -> Unit = {},
+        var createNewTodo: () -> Unit = {}
 ) : RProps
 
 fun RBuilder.selectedTodo() = connector.connect(this, SelectedTodo::class, { store: TodoStore ->
     SelectedTodoProps(
             store.selectedTodoCollection,
-            { index: Int -> store.toggleComplete(index) }
+            { index: Int -> store.toggleComplete(index) },
+            store.newTodoText,
+            { text: String -> store.updateNewTodoText(text) },
+            { store.createNewTodo() }
     )
 })
