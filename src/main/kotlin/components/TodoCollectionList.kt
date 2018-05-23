@@ -1,6 +1,7 @@
 package components
 
 import TodoCollection
+import components.styles.TodoStyles
 import connector
 import kotlinx.css.ListStyleType
 import kotlinx.css.padding
@@ -12,6 +13,7 @@ import org.w3c.dom.HTMLInputElement
 import react.*
 import react.dom.*
 import styled.css
+import styled.styledLi
 import styled.styledUl
 
 class TodoCollectionList : RComponent<TodoCollectionListProps, RState>() {
@@ -48,7 +50,10 @@ class TodoCollectionList : RComponent<TodoCollectionListProps, RState>() {
                 }
 
                 props.collectionList.mapIndexed { index: Int, collection: TodoCollection ->
-                    li {
+                    styledLi {
+                        css {
+                            +TodoStyles.listItem
+                        }
                         +collection.name
 
                         attrs {

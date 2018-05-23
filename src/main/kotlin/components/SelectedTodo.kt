@@ -4,6 +4,8 @@ import Todo
 import TodoCollection
 import TodoStore
 import connector
+import kotlinx.css.ListStyleType
+import kotlinx.css.padding
 import kotlinx.css.px
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onSubmitFunction
@@ -46,7 +48,8 @@ class SelectedTodo : RComponent<SelectedTodoProps, RState>() {
 
             styledUl {
                 css {
-                    paddingLeft = 20.px
+                    listStyleType = ListStyleType.none
+                    padding(0.px)
                 }
 
                 props.selectedTodoCollection.todos.mapIndexed { index: Int, todo: Todo ->
