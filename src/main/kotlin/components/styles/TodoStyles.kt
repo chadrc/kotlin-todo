@@ -8,14 +8,20 @@ import kotlinx.css.properties.transition
 import styled.StyleSheet
 
 object TodoStyles : StyleSheet("TodoStyles", isStatic = true) {
-    val todoListItem by css {
+    private val item by css {
         fontSize = 1.25.rem
-        cursor = Cursor.default
         borderBottom(2.px, BorderStyle.solid, Color.white)
+        cursor = Cursor.default
 
         hover {
             borderBottomColor = Color.black
         }
+
+        transition("border", .1.s)
+    }
+
+    val todoListItem by css {
+        +item
 
         label {
             padding(0.5.rem)
@@ -25,16 +31,9 @@ object TodoStyles : StyleSheet("TodoStyles", isStatic = true) {
     }
 
     val todoCollectionListItem by css {
-        fontSize = 1.25.rem
-        borderBottom(2.px, BorderStyle.solid, Color.white)
+        +item
+
         padding(0.5.rem)
-        cursor = Cursor.default
-
-        hover {
-            borderBottomColor = Color.black
-        }
-
-        transition("border", .1.s)
     }
 
     val input by css {
