@@ -3,6 +3,8 @@ package components.styles
 import extensions.rem
 import kotlinx.css.*
 import kotlinx.css.properties.borderBottom
+import kotlinx.css.properties.s
+import kotlinx.css.properties.transition
 import styled.StyleSheet
 
 object TodoStyles : StyleSheet("TodoStyles", isStatic = true) {
@@ -18,6 +20,8 @@ object TodoStyles : StyleSheet("TodoStyles", isStatic = true) {
         label {
             padding(0.5.rem)
         }
+
+        transition("border", .1.s)
     }
 
     val todoCollectionListItem by css {
@@ -29,6 +33,8 @@ object TodoStyles : StyleSheet("TodoStyles", isStatic = true) {
         hover {
             borderBottomColor = Color.black
         }
+
+        transition("border", .1.s)
     }
 
     val input by css {
