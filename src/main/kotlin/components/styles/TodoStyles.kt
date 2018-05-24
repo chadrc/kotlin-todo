@@ -6,6 +6,8 @@ import kotlinx.css.properties.borderBottom
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
 import styled.StyleSheet
+import styled.animation
+import styled.keyframes
 
 object TodoStyles : StyleSheet("TodoStyles", isStatic = true) {
 
@@ -22,8 +24,6 @@ object TodoStyles : StyleSheet("TodoStyles", isStatic = true) {
         label {
             padding(0.5.rem)
         }
-
-        transition("border", .1.s)
     }
 
     val todoCollectionListItem by css {
@@ -55,5 +55,15 @@ object TodoStyles : StyleSheet("TodoStyles", isStatic = true) {
         }
 
         transition("border", .1.s)
+
+        animation(duration = 0.25.s) {
+            from {
+                opacity = 0
+            }
+
+            to {
+                opacity = 1.0
+            }
+        }
     }
 }
