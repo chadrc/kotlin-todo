@@ -13,7 +13,7 @@ fun main(args: Array<String>) {
     }
 
     // Suppressing "defineModule not a function" error until it can be fixed
-    Kotlin.defineModule = {module: String -> module}
+    Kotlin.defineModule = { module: String -> module }
 
     StyledComponents.injectGlobal(TodoStyles.global.toString())
 }
