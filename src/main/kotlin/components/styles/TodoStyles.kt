@@ -7,7 +7,6 @@ import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
 import styled.StyleSheet
 import styled.animation
-import styled.keyframes
 
 object TodoStyles : StyleSheet("TodoStyles", isStatic = true) {
 
