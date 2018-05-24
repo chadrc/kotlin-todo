@@ -12,14 +12,16 @@ import kotlinx.html.js.onSubmitFunction
 import org.w3c.dom.HTMLInputElement
 import react.*
 import react.dom.*
-import styled.css
-import styled.styledLi
-import styled.styledUl
+import styled.*
 
 class TodoCollectionList : RComponent<TodoCollectionListProps, RState>() {
     override fun RBuilder.render() {
 
-        aside {
+        styledAside {
+            css {
+                marginRight = 20.px
+            }
+
             h3 {
                 +"Collections"
             }
@@ -32,13 +34,18 @@ class TodoCollectionList : RComponent<TodoCollectionListProps, RState>() {
                     }
                 }
 
-                input {
+                styledInput {
+                    css {
+                        +TodoStyles.input
+                    }
+
                     attrs {
                         onChangeFunction = {
                             val value = (it.target as HTMLInputElement).value
                             props.updateNewCollectionName(value)
                         }
                         value = props.newCollectionName
+                        placeholder = "New Collection"
                     }
                 }
             }
@@ -52,7 +59,7 @@ class TodoCollectionList : RComponent<TodoCollectionListProps, RState>() {
                 props.collectionList.mapIndexed { index: Int, collection: TodoCollection ->
                     styledLi {
                         css {
-                            +TodoStyles.listItem
+                            +TodoStyles.todoCollectionListItem
                         }
                         +collection.name
 

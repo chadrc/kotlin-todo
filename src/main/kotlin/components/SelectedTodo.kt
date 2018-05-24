@@ -3,6 +3,7 @@ package components
 import Todo
 import TodoCollection
 import TodoStore
+import components.styles.TodoStyles
 import connector
 import kotlinx.css.ListStyleType
 import kotlinx.css.padding
@@ -18,6 +19,7 @@ import react.dom.form
 import react.dom.h3
 import react.dom.input
 import styled.css
+import styled.styledInput
 import styled.styledUl
 
 class SelectedTodo : RComponent<SelectedTodoProps, RState>() {
@@ -35,13 +37,18 @@ class SelectedTodo : RComponent<SelectedTodoProps, RState>() {
                     }
                 }
 
-                input {
+                styledInput {
+                    css {
+                        +TodoStyles.input
+                    }
+
                     attrs {
                         onChangeFunction = {
                             val value = (it.target as HTMLInputElement).value
                             props.updateNewTodoText(value)
                         }
                         value = props.newTodoText
+                        placeholder = "New Todo"
                     }
                 }
             }

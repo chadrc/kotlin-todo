@@ -42,7 +42,7 @@ class TodoApp : RComponent<RProps, RState>() {
 
                 styledSection {
                     css {
-                        flexGrow = 2.0
+                        flexGrow = 3.0
                     }
 
                     selectedTodo()

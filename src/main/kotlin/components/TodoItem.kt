@@ -15,7 +15,7 @@ import styled.styledLi
 fun RBuilder.todoItem(text: String = "", completed: Boolean = false, onClick: () -> Unit = {}) {
     styledLi {
         css {
-            +TodoStyles.listItem
+            +TodoStyles.todoListItem
         }
 
         styledLabel {
