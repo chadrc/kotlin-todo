@@ -60,7 +60,7 @@ class SelectedTodo : RComponent<SelectedTodoProps, RState>() {
                 }
 
                 props.selectedTodoCollection.todos.mapIndexed { index: Int, todo: Todo ->
-                    todoItem(todo.text, todo.completed, { props.toggleComplete(index) })
+                    todoItem(todo.text, todo.completed, { props.toggleComplete(index) }, { props. startDeleteTodo(index) })
                 }
             }
         }
@@ -72,7 +72,8 @@ class SelectedTodoProps(
         val toggleComplete: (index: Int) -> Unit = {},
         var newTodoText: String = "",
         var updateNewTodoText: (text: String) -> Unit = {},
-        var createNewTodo: () -> Unit = {}
+        var createNewTodo: () -> Unit = {},
+        var startDeleteTodo: (index: Int) -> Unit = {}
 ) : RProps
 
 fun RBuilder.selectedTodo() = connector.connect(this, SelectedTodo::class, { store: TodoStore ->
@@ -81,6 +82,7 @@ fun RBuilder.selectedTodo() = connector.connect(this, SelectedTodo::class, { sto
             { index: Int -> store.toggleComplete(index) },
             store.newTodoText,
             { text: String -> store.updateNewTodoText(text) },
-            { store.createNewTodo() }
+            { store.createNewTodo() },
+            { index: Int -> store.startDeleteTodo(index)}
     )
 })

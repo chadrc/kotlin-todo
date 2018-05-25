@@ -25,6 +25,25 @@ object TodoStyles : StyleSheet("TodoStyles", isStatic = true) {
         }
     }
 
+    val todoCollectionListItem by css {
+        +item
+
+        padding(0.5.rem)
+    }
+
+    val input by css {
+        fontSize = 1.25.rem
+
+        width = 100.pct
+
+        padding(0.5.rem)
+
+        boxSizing = BoxSizing.borderBox
+        borderStyle = BorderStyle.none
+        borderBottomStyle = BorderStyle.solid
+        outline = Outline.none
+    }
+
     val modal by css {
         position = Position.fixed
         top = 0.px
@@ -102,25 +121,6 @@ object TodoStyles : StyleSheet("TodoStyles", isStatic = true) {
                 }
             }
         }
-    }
-
-    val todoCollectionListItem by css {
-        +item
-
-        padding(0.5.rem)
-    }
-
-    val input by css {
-        fontSize = 1.25.rem
-
-        width = 100.pct
-
-        padding(0.5.rem)
-
-        boxSizing = BoxSizing.borderBox
-        borderStyle = BorderStyle.none
-        borderBottomStyle = BorderStyle.solid
-        outline = Outline.none
     }
 
     private val item by css {

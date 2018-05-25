@@ -3,9 +3,7 @@ package components
 import TodoCollection
 import components.styles.TodoStyles
 import connector
-import kotlinx.css.ListStyleType
-import kotlinx.css.padding
-import kotlinx.css.px
+import kotlinx.css.*
 import kotlinx.html.Entities
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
@@ -66,6 +64,9 @@ class TodoCollectionList : RComponent<TodoCollectionListProps, RState>() {
                     styledLi {
                         css {
                             +TodoStyles.todoCollectionListItem
+
+                            display = Display.flex
+                            justifyContent = JustifyContent.spaceBetween
                         }
                         +collection.name
 
@@ -75,7 +76,10 @@ class TodoCollectionList : RComponent<TodoCollectionListProps, RState>() {
                             }
 
                             attrs {
-                                onClickFunction = { props.startDeleteConfirmation(index) }
+                                onClickFunction = {
+                                    it.stopPropagation()
+                                    props.startDeleteConfirmation(index)
+                                }
                             }
                         }
 
