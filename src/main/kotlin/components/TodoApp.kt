@@ -49,6 +49,8 @@ class TodoApp : RComponent<RProps, RState>() {
                 }
             }
         }
+
+        deleteConfirmationModal()
     }
 }
 
