@@ -1,6 +1,8 @@
 package components
 
 import components.styles.TodoStyles
+import connector
+import kotlinx.html.js.onClickFunction
 import react.RBuilder
 import react.RComponent
 import react.RProps
@@ -12,26 +14,36 @@ import react.dom.section
 import styled.css
 import styled.styledDiv
 
-class DeleteConfirmationModal : RComponent<RProps, RState>() {
+class DeleteConfirmationModal : RComponent<DeleteConfirmationModalProps, RState>() {
     override fun RBuilder.render() {
-        styledDiv {
-            css {
-                +TodoStyles.modal
-            }
-
-            aside {
-                h3 {
-                    +"Are you sure you want to delete?"
+        if (props.confirmingDelete) {
+            styledDiv {
+                css {
+                    +TodoStyles.modal
                 }
 
-                section {
-
-                    button {
-                        +"Cancel"
+                aside {
+                    h3 {
+                        +"Are you sure you want to delete?"
                     }
 
-                    button {
-                        +"Yes"
+                    section {
+
+                        button {
+                            +"Cancel"
+
+                            attrs {
+                                onClickFunction = { props.cancelDelete() }
+                            }
+                        }
+
+                        button {
+                            +"Yes"
+
+                            attrs {
+                                onClickFunction = { props.confirmDelete() }
+                            }
+                        }
                     }
                 }
             }
@@ -39,4 +51,16 @@ class DeleteConfirmationModal : RComponent<RProps, RState>() {
     }
 }
 
-fun RBuilder.deleteConfirmationModal() = child(DeleteConfirmationModal::class) {}
+class DeleteConfirmationModalProps(
+        var confirmingDelete: Boolean = false,
+        var confirmDelete: () -> Unit,
+        var cancelDelete: () -> Unit
+) : RProps
+
+fun RBuilder.deleteConfirmationModal() = connector.connect(this, DeleteConfirmationModal::class) { store ->
+    DeleteConfirmationModalProps(
+            store.indexToDelete != -1,
+            { store.confirmDelete() },
+            { store.cancelDelete() }
+    )
+}

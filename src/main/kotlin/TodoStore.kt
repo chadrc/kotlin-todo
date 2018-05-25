@@ -3,16 +3,25 @@ import store.StoreConnector
 import kotlin.browser.localStorage
 
 class TodoStore : Store() {
+    private enum class Resource {
+        Collection,
+        Todo
+    }
     private var _todoCollections: ArrayList<TodoCollection> = ArrayList()
     private var _selectedTodoCollectionIndex: Int = -1
     private var _newCollectionName: String = ""
     private var _newTodoText: String = ""
+    private var _indexToDelete: Int = -1
+    private var _deleteType: Resource? = null
 
     val todoCollections: ArrayList<TodoCollection> get() = _todoCollections
     val newCollectionName: String get() = _newCollectionName
     val newTodoText: String get() = _newTodoText
+    val indexToDelete: Int get() = _indexToDelete
     val selectedTodoCollection: TodoCollection?
-        get() = if (_selectedTodoCollectionIndex == -1) null else _todoCollections[_selectedTodoCollectionIndex]
+        get() = if (_selectedTodoCollectionIndex == -1
+                || _selectedTodoCollectionIndex >= _todoCollections.size)
+            null else _todoCollections[_selectedTodoCollectionIndex]
 
     init {
         val dataStr = localStorage.getItem("todo-data")
@@ -85,6 +94,28 @@ class TodoStore : Store() {
             todo.completed = !todo.completed
         }
         serialize()
+    }
+
+    fun startDeleteCollection(index: Int) = action {
+        _deleteType = Resource.Collection
+        _indexToDelete = index
+    }
+
+    fun startDeleteTodo(index: Int) = action {
+        _deleteType = Resource.Todo
+        _indexToDelete = index
+    }
+
+    fun confirmDelete() = action {
+        val collection = if (_deleteType == Resource.Collection) _todoCollections else selectedTodoCollection?.todos
+        console.log("removing", _indexToDelete, collection)
+        collection?.removeAt(_indexToDelete)
+        cancelDelete()
+    }
+
+    fun cancelDelete() = action {
+        _indexToDelete = -1
+        _deleteType = null
     }
 
     private data class SaveData(
