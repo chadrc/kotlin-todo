@@ -1,13 +1,12 @@
 package components
 
 import components.styles.TodoStyles
+import kotlinx.css.Align
 import kotlinx.css.Display
 import kotlinx.css.JustifyContent
-import kotlinx.html.Entities
 import kotlinx.html.InputType
 import kotlinx.html.js.onClickFunction
 import react.RBuilder
-import react.dom.button
 import react.dom.input
 import react.dom.span
 import styled.css
@@ -24,6 +23,7 @@ fun RBuilder.todoItem(text: String = "", completed: Boolean = false, onCheckboxC
             css {
                 display = Display.flex
                 justifyContent = JustifyContent.spaceBetween
+                alignItems = Align.center
             }
 
             span {
@@ -39,17 +39,9 @@ fun RBuilder.todoItem(text: String = "", completed: Boolean = false, onCheckboxC
                     }
                 }
 
-                button {
-                    consumer.onTagContentUnsafe {
-                        +Entities.times
-                    }
-
-                    attrs {
-                        onClickFunction = {
-                            it.stopPropagation()
-                            onDeleteClicked()
-                        }
-                    }
+                deleteButton {
+                    it.stopPropagation()
+                    onDeleteClicked()
                 }
             }
         }

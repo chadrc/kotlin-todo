@@ -67,20 +67,13 @@ class TodoCollectionList : RComponent<TodoCollectionListProps, RState>() {
 
                             display = Display.flex
                             justifyContent = JustifyContent.spaceBetween
+                            alignItems = Align.center
                         }
                         +collection.name
 
-                        button {
-                            consumer.onTagContentUnsafe {
-                                +Entities.times
-                            }
-
-                            attrs {
-                                onClickFunction = {
-                                    it.stopPropagation()
-                                    props.startDeleteConfirmation(index)
-                                }
-                            }
+                        deleteButton {
+                            it.stopPropagation()
+                            props.startDeleteConfirmation(index)
                         }
 
                         attrs {

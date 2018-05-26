@@ -31,6 +31,28 @@ object TodoStyles : StyleSheet("TodoStyles", isStatic = true) {
         padding(0.5.rem)
     }
 
+    private val item by css {
+        fontSize = 1.25.rem
+        borderBottom(2.px, BorderStyle.solid, Color.white)
+        cursor = Cursor.default
+
+        hover {
+            borderBottomColor = Color.black
+        }
+
+        transition("border", .1.s)
+
+        animation(duration = 0.25.s) {
+            from {
+                opacity = 0
+            }
+
+            to {
+                opacity = 1.0
+            }
+        }
+    }
+
     val input by css {
         fontSize = 1.25.rem
 
@@ -42,6 +64,28 @@ object TodoStyles : StyleSheet("TodoStyles", isStatic = true) {
         borderStyle = BorderStyle.none
         borderBottomStyle = BorderStyle.solid
         outline = Outline.none
+    }
+
+    val deleteButton by css {
+        fontSize = 1.25.rem
+        width = 1.25.em
+        height = 1.25.em
+
+        borderStyle = BorderStyle.none
+        outline = Outline.none
+
+        color = Color.white
+        backgroundColor = rgb(240, 0, 0)
+
+        borderRadius = 50.pct
+
+        hover {
+            backgroundColor = rgb(220, 0, 0)
+        }
+
+        active {
+            backgroundColor = rgb(200, 0, 0)
+        }
     }
 
     val modal by css {
@@ -119,28 +163,6 @@ object TodoStyles : StyleSheet("TodoStyles", isStatic = true) {
                         marginRight = 0.rem
                     }
                 }
-            }
-        }
-    }
-
-    private val item by css {
-        fontSize = 1.25.rem
-        borderBottom(2.px, BorderStyle.solid, Color.white)
-        cursor = Cursor.default
-
-        hover {
-            borderBottomColor = Color.black
-        }
-
-        transition("border", .1.s)
-
-        animation(duration = 0.25.s) {
-            from {
-                opacity = 0
-            }
-
-            to {
-                opacity = 1.0
             }
         }
     }
