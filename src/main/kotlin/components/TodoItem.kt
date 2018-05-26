@@ -10,6 +10,7 @@ import react.RBuilder
 import react.dom.input
 import react.dom.span
 import styled.css
+import styled.styledInput
 import styled.styledLabel
 import styled.styledLi
 
@@ -31,7 +32,11 @@ fun RBuilder.todoItem(text: String = "", completed: Boolean = false, onCheckboxC
             }
 
             span {
-                input {
+                styledInput {
+                    css {
+                        +TodoStyles.completeToggle
+                    }
+
                     attrs {
                         type = InputType.checkBox
                         checked = completed

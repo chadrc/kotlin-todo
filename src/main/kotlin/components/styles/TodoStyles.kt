@@ -66,6 +66,10 @@ object TodoStyles : StyleSheet("TodoStyles", isStatic = true) {
         outline = Outline.none
     }
 
+    val completeToggle by css {
+
+    }
+
     val deleteButton by css {
         fontSize = 1.25.rem
         width = 1.25.em
