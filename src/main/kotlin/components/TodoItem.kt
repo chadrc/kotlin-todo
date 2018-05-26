@@ -8,7 +8,10 @@ import kotlinx.html.InputType
 import kotlinx.html.js.onClickFunction
 import react.RBuilder
 import react.dom.span
-import styled.*
+import styled.css
+import styled.styledInput
+import styled.styledLabel
+import styled.styledLi
 
 fun RBuilder.todoItem(
         text: String = "",
@@ -33,22 +36,20 @@ fun RBuilder.todoItem(
             }
 
             span {
-                styledInput {
+                styledInput(InputType.checkBox) {
                     css {
                         display = Display.none
+                        +TodoStyles.completeToggle
                     }
 
                     attrs {
-                        type = InputType.checkBox
                         checked = completed
                         onClickFunction = { onCheckboxClick() }
                     }
                 }
 
-                styledSpan {
-                    css {
-                        +TodoStyles.completeToggle
-                    }
+                span(if (completed) "completed" else "") {
+
                 }
 
                 deleteButton {
