@@ -2,6 +2,7 @@ package components.styles
 
 import extensions.rem
 import kotlinx.css.*
+import kotlinx.css.properties.border
 import kotlinx.css.properties.borderBottom
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
@@ -67,7 +68,28 @@ object TodoStyles : StyleSheet("TodoStyles", isStatic = true) {
     }
 
     val completeToggle by css {
+        display = Display.inlineBlock
+        verticalAlign = VerticalAlign.bottom
 
+        width = 1.25.em
+        height = 1.25.em
+
+        backgroundColor = rgb(0, 240, 0)
+
+        boxSizing = BoxSizing.borderBox
+
+        border(3.px, BorderStyle.solid, Color.black)
+        borderRadius = 50.pct
+
+        marginRight = .5.rem
+
+        hover {
+            backgroundColor = rgb(0, 220, 0)
+        }
+
+        active {
+            backgroundColor = rgb(0, 200, 0)
+        }
     }
 
     val deleteButton by css {
