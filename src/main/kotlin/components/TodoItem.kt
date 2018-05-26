@@ -13,7 +13,12 @@ import styled.styledInput
 import styled.styledLabel
 import styled.styledLi
 
-fun RBuilder.todoItem(text: String = "", completed: Boolean = false, onCheckboxClick: () -> Unit = {}, onDeleteClicked: () -> Unit = {}) {
+fun RBuilder.todoItem(
+        text: String = "",
+        completed: Boolean = false,
+        onCheckboxClick: () -> Unit = {},
+        onDeleteClicked: () -> Unit = {}
+) {
     styledLi {
         css {
             +TodoStyles.todoListItem
