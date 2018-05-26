@@ -7,7 +7,6 @@ import kotlinx.css.JustifyContent
 import kotlinx.html.InputType
 import kotlinx.html.js.onClickFunction
 import react.RBuilder
-import react.dom.input
 import react.dom.span
 import styled.css
 import styled.styledInput
