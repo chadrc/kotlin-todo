@@ -1,4 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
+
+### Project
+todo-api/src/main/resources/static
+
 ### Java/Kotlin template
 # Compiled class file
 *.class

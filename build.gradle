@@ -1,1 +1,15 @@
 
+task copyIndex(type: Copy) {
+    from 'todo-web/public/index.html'
+    into 'todo-api/src/main/resources/static/'
+}
+
+task copyJs(type: Copy) {
+    from 'todo-web/build/bundle/main.bundle.js'
+    into 'todo-api/src/main/resources/static/'
+}
+
+task copyPublic
+
+copyPublic.dependsOn copyIndex
+copyPublic.dependsOn copyJs
