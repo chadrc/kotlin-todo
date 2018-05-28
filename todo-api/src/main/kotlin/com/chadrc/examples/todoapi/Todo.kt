@@ -1,5 +1,10 @@
 package com.chadrc.examples.todoapi
 
-data class Todo(var text: String, var completed: Boolean = false) {
-    var id: Int = -1
-}
+import org.springframework.data.annotation.Id
+
+data class Todo(
+        var text: String,
+        var completed: Boolean = false,
+        @Id
+        var id: Int = -1
+)

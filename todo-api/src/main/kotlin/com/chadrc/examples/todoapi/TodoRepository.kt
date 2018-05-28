@@ -1,6 +1,6 @@
 package com.chadrc.examples.todoapi
 
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.mongodb.repository.MongoRepository
 
-interface TodoRepository : CrudRepository<Todo, Int> {
+interface TodoRepository : MongoRepository<Todo, Int> {
 }
