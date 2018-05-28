@@ -1,15 +1,17 @@
 package com.chadrc.examples.todoapi
 
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
+@RequestMapping("collection")
 class TodoCollectionController(val todoCollectionRepository: TodoCollectionRepository) {
 
     @GetMapping
     fun findAll(): Iterable<TodoCollection> = todoCollectionRepository.findAll()
 
     @PostMapping
-    fun create(name: String) = todoCollectionRepository.save(TodoCollection(name))
+    fun create(@RequestBody request: CreateRequest) =
+            todoCollectionRepository.save(TodoCollection(request.name))
+
+    data class CreateRequest(val name: String)
 }
