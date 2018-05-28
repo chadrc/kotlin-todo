@@ -1,6 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
 
 ### Project
+
+# These are generated and copied over from todo-web
 todo-api/src/main/resources/static
 
 ### Java/Kotlin template
