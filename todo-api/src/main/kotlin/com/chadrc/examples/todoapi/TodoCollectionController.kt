@@ -13,5 +13,6 @@ class TodoCollectionController(val todoCollectionRepository: TodoCollectionRepos
     fun create(@RequestBody request: CreateRequest) =
             todoCollectionRepository.save(TodoCollection(request.name))
 
+
     data class CreateRequest(val name: String)
 }

@@ -7,5 +7,11 @@ class TodoCollection(
         var name: String,
         val todos: ArrayList<Todo> = ArrayList(),
         @Id
-        var id: ObjectId = ObjectId()
-)
+        var _id: ObjectId = ObjectId()
+) {
+    var id: String
+        get() = _id.toHexString()
+        set(value) {
+            _id = ObjectId(value)
+        }
+}
