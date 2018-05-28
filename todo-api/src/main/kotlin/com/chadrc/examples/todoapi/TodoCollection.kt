@@ -5,7 +5,7 @@ import org.springframework.data.annotation.Id
 
 class TodoCollection(
         var name: String,
-        val todos: ArrayList<Todo> = ArrayList(),
+        public var todos: ArrayList<Todo> = ArrayList(),
         @Id
         var _id: ObjectId = ObjectId()
 ) {
