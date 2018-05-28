@@ -17,7 +17,6 @@ import react.RProps
 import react.RState
 import react.dom.form
 import react.dom.h3
-import react.dom.input
 import styled.css
 import styled.styledInput
 import styled.styledUl

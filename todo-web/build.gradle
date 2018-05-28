@@ -1,0 +1,71 @@
+buildscript {
+    ext.kotlin_version = '1.2.41'
+
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url "https://dl.bintray.com/kotlin/kotlin-eap" }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-frontend-plugin:0.0.31"
+    }
+}
+
+plugins {
+    id 'java'
+}
+
+group 'com.chadrc.examples'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'kotlin2js'
+apply plugin: 'kotlin-dce-js'
+apply plugin: 'org.jetbrains.kotlin.frontend'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven { url "https://dl.bintray.com/kotlin/kotlin-js-wrappers" }
+    maven { url "https://dl.bintray.com/kotlin/kotlinx.html" }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+    compile 'org.jetbrains:kotlin-react:16.3.1-pre.28-kotlin-1.2.30'
+    compile 'org.jetbrains:kotlin-styled:1.0.0-pre.28-kotlin-1.2.30'
+    compile 'org.jetbrains:kotlin-react-dom:16.3.1-pre.28-kotlin-1.2.30'
+    testCompile "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+kotlinFrontend {
+    downloadNodeJsVersion = "latest"
+
+    npm {
+        dependency "react"
+        dependency "react-dom"
+        dependency "style-loader"
+        dependency "styled-components"
+        dependency "inline-style-prefixer"
+    }
+
+    webpackBundle {
+        bundleName = "main"
+        contentPath = file('public')
+        port = 8080
+        mode = 'development'
+    }
+
+    define "PRODUCTION", false
+    define "X", false
+}
+
+compileKotlin2Js {
+    kotlinOptions.metaInfo = true
+    kotlinOptions.outputFile = "${project.buildDir}/js/${project.name}.js"
+    kotlinOptions.moduleKind = "commonjs"
+    kotlinOptions.sourceMap = true
+    kotlinOptions.main = "call"
+}

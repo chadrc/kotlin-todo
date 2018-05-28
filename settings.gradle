@@ -1,3 +1,5 @@
 rootProject.name = 'hello-world-mk-001'
 
 include 'todo-api'
+include 'todo-web'
+
