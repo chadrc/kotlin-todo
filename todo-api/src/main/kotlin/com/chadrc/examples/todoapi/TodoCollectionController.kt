@@ -33,6 +33,52 @@ class TodoCollectionController(val todoCollectionRepository: TodoCollectionRepos
         return ResponseEntity.notFound().build()
     }
 
+    data class EditRequest(val collectionId: String, val name: String)
+
+    @PatchMapping
+    fun edit(@RequestBody request: EditRequest): ResponseEntity<Any> {
+        val optional = todoCollectionRepository.findById(ObjectId(request.collectionId))
+        if (optional.isPresent) {
+            val collection = optional.get()
+            collection.name = request.name
+            todoCollectionRepository.save(collection)
+            return ResponseEntity.ok().build()
+        }
+
+        return ResponseEntity.notFound().build()
+    }
+
+    data class EditTodoRequest(val collectionId: String, val todoIndex: Int, val text: String?, val completed: Boolean?)
+
+    @PatchMapping("/todo")
+    fun editTodo(@RequestBody request: EditTodoRequest): ResponseEntity<Any> {
+        if (request.todoIndex < 0) {
+            return ResponseEntity.badRequest().body("todoIndex must be a positive integer.")
+        }
+
+        val optional = todoCollectionRepository.findById(ObjectId(request.collectionId))
+        if (optional.isPresent) {
+            val collection = optional.get()
+            if (request.todoIndex >= collection.todos.size) {
+                return ResponseEntity.notFound().build()
+            }
+            val todo = collection.todos[request.todoIndex]
+            if (request.text != null) {
+                todo.text = request.text
+            }
+
+            if (request.completed != null) {
+                todo.completed = request.completed
+            }
+
+            todoCollectionRepository.save(collection)
+
+            return ResponseEntity.ok().build()
+        }
+
+        return ResponseEntity.notFound().build()
+    }
+
     @DeleteMapping
     fun deleteCollection(@RequestParam collectionId: String) = todoCollectionRepository.deleteById(ObjectId(collectionId))
 
@@ -50,6 +96,7 @@ class TodoCollectionController(val todoCollectionRepository: TodoCollectionRepos
             }
             collection.todos.removeAt(todoIndex)
             todoCollectionRepository.save(collection)
+            return ResponseEntity.ok().build()
         }
 
         return ResponseEntity.notFound().build()
