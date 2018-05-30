@@ -3,13 +3,16 @@ task copyIndex(type: Copy) {
     from 'todo-web/public/index.html'
     into 'todo-api/src/main/resources/static/'
 }
+copyIndex.dependsOn ":todo-web:webpack-bundle"
 
 task copyJs(type: Copy) {
     from 'todo-web/build/bundle/main.bundle.js'
     into 'todo-api/src/main/resources/static/'
 }
+copyJs.dependsOn ":todo-web:webpack-bundle"
 
-task copyPublic
-
-copyPublic.dependsOn copyIndex
-copyPublic.dependsOn copyJs
+configure(subprojects.find {it.name == "todo-api"}) {
+    task copyPublic
+    copyPublic.dependsOn copyIndex
+    copyPublic.dependsOn copyJs
+}

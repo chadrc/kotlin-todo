@@ -50,3 +50,5 @@ dependencies {
     compile("org.jetbrains.kotlin:kotlin-reflect")
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
+
+bootRun.dependsOn copyPublic
