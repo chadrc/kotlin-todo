@@ -12,7 +12,7 @@ task copyJs(type: Copy) {
 copyJs.dependsOn ":todo-web:webpack-bundle"
 
 configure(subprojects.find {it.name == "todo-api"}) {
-    task copyPublic
+    task copyPublic {}
     copyPublic.dependsOn copyIndex
     copyPublic.dependsOn copyJs
 }
