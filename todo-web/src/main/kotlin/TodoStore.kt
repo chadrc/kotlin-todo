@@ -107,7 +107,6 @@ class TodoStore : Store() {
 
     fun confirmDelete() = action {
         val collection = if (_deleteType == Resource.Collection) _todoCollections else selectedTodoCollection?.todos
-        console.log("removing", _indexToDelete, collection)
         collection?.removeAt(_indexToDelete)
         cancelDelete()
     }
