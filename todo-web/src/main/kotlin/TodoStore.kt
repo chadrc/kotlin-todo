@@ -100,10 +100,29 @@ class TodoStore : Store() {
         _newTodoText = text
     }
 
+    private data class NewTodoRequest(val collectionId: String, val text: String)
+
     fun createNewTodo() = action {
         selectedTodoCollection?.todos?.add(Todo(_newTodoText))
-        _newTodoText = ""
         serialize()
+
+        if (_apiEnabled) {
+            val id = selectedTodoCollection?.id ?: ""
+            window.fetch("/collection/todo", object : RequestInit {
+                override var method: String? = "POST"
+                override var headers: Headers = _requestHeaders
+                override var body: dynamic = JSON.stringify(NewTodoRequest(id, _newTodoText))
+            }).then {
+                it.json().then {
+                    console.log("Todo creation successful", it)
+                }.catch {
+                    console.error("Could not create todo", it)
+                }
+            }.catch {
+                console.error("Could not create todo", it)
+            }
+        }
+        _newTodoText = ""
     }
 
     fun selectTodoCollection(index: Int) = action {
