@@ -1,17 +1,21 @@
+import org.w3c.fetch.RequestInit
 import store.Store
 import store.StoreConnector
 import kotlin.browser.localStorage
+import kotlin.browser.window
 
 class TodoStore : Store() {
     private enum class Resource {
         Collection,
         Todo
     }
-    private var _todoCollections: ArrayList<TodoCollection> = ArrayList()
-    private var _selectedTodoCollectionIndex: Int = -1
-    private var _newCollectionName: String = ""
-    private var _newTodoText: String = ""
-    private var _indexToDelete: Int = -1
+
+    private var _apiEnabled = false
+    private var _todoCollections = ArrayList<TodoCollection>()
+    private var _selectedTodoCollectionIndex = -1
+    private var _newCollectionName = ""
+    private var _newTodoText = ""
+    private var _indexToDelete = -1
     private var _deleteType: Resource? = null
 
     val todoCollections: ArrayList<TodoCollection> get() = _todoCollections
@@ -24,40 +28,35 @@ class TodoStore : Store() {
             null else _todoCollections[_selectedTodoCollectionIndex]
 
     init {
-        val dataStr = localStorage.getItem("todo-data")
-        if (dataStr == null) {
-            _todoCollections = ArrayList()
-            val startingTodos: ArrayList<Todo> = ArrayList()
+        // Check if api is up
+        window.fetch("/collection", object : RequestInit {
+            override var method: String? = "GET"
+        }).then {
+            it.json().then {
+                _apiEnabled = true
+                this@TodoStore.initTodos(parseTodos(it))
+            }.catch {
+                console.error(it)
+            }
+        }.catch {
+            console.log("Can't connect, will use local storage for persistence.")
 
-            startingTodos.add(Todo("Make Coffee"))
-            startingTodos.add(Todo("Eat Breakfast"))
-            startingTodos.add(Todo("Pack Lunch"))
+            val dataStr = localStorage.getItem("todo-data")
+            if (dataStr == null) {
+                _todoCollections = ArrayList()
+                val startingTodos: ArrayList<Todo> = ArrayList()
 
-            _todoCollections.add(TodoCollection("Morning Routine", startingTodos))
-            serialize()
-        } else {
-            val data = JSON.parse<SaveData>(dataStr)
+                startingTodos.add(Todo("Make Coffee"))
+                startingTodos.add(Todo("Eat Breakfast"))
+                startingTodos.add(Todo("Pack Lunch"))
 
-            _selectedTodoCollectionIndex = data.selectedCollectionIndex
-            _todoCollections = ArrayList()
+                _todoCollections.add(TodoCollection("Morning Routine", startingTodos))
+                serialize()
+            } else {
+                val data = JSON.parse<SaveData>(dataStr)
 
-            // Hack until serialization can be figured out
-            val todoCollections: dynamic = data.todoCollections
-            var i: dynamic = 0
-            while (i < todoCollections.length) {
-                val collectionData = todoCollections[i]
-                val todosData = collectionData.todos
-                val todos = ArrayList<Todo>()
-
-                var j: dynamic = 0
-                while (j < todosData.length) {
-                    val todoData = todosData[j]
-                    todos.add(Todo(todoData.text as String, todoData.completed as Boolean))
-                    j++
-                }
-
-                _todoCollections.add(TodoCollection(collectionData.name as String, todos))
-                i++
+                _selectedTodoCollectionIndex = data.selectedCollectionIndex
+                _todoCollections = parseTodos(data.todoCollections)
             }
         }
     }
@@ -118,6 +117,10 @@ class TodoStore : Store() {
         _deleteType = null
     }
 
+    private fun initTodos(todos: ArrayList<TodoCollection>) = action {
+        this._todoCollections = todos
+    }
+
     private data class SaveData(
             val todoCollections: ArrayList<TodoCollection>,
             val selectedCollectionIndex: Int
@@ -128,6 +131,29 @@ class TodoStore : Store() {
                 _todoCollections,
                 _selectedTodoCollectionIndex
         )))
+    }
+
+    private fun parseTodos(data: dynamic): ArrayList<TodoCollection> {
+        // Hack until serialization can be figured out
+        val collections = ArrayList<TodoCollection>()
+        var i: dynamic = 0
+        while (i < data.length) {
+            val collectionData = data[i]
+            val todosData = collectionData.todos
+            val todos = ArrayList<Todo>()
+
+            var j: dynamic = 0
+            while (j < todosData.length) {
+                val todoData = todosData[j]
+                todos.add(Todo(todoData.text as String, todoData.completed as Boolean))
+                j++
+            }
+
+            collections.add(TodoCollection(collectionData.name as String, todos))
+            i++
+        }
+
+        return collections
     }
 }
 
