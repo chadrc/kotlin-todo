@@ -1,3 +1,4 @@
+import org.w3c.fetch.Headers
 import org.w3c.fetch.RequestInit
 import store.Store
 import store.StoreConnector
@@ -17,6 +18,8 @@ class TodoStore : Store() {
     private var _newTodoText = ""
     private var _indexToDelete = -1
     private var _deleteType: Resource? = null
+
+    private val _requestHeaders = Headers()
 
     val todoCollections: ArrayList<TodoCollection> get() = _todoCollections
     val newCollectionName: String get() = _newCollectionName
@@ -59,16 +62,38 @@ class TodoStore : Store() {
                 _todoCollections = parseTodos(data.todoCollections)
             }
         }
+
+        _requestHeaders.append("Content-Type", "application/json")
+        _requestHeaders.append("Accept", "application/json")
     }
 
     fun updateNewCollectionName(name: String) = action {
         _newCollectionName = name
     }
 
+    private data class CreateCollectionRequest(val name: String)
+
     fun createNewCollection() = action {
         _todoCollections.add(TodoCollection(_newCollectionName))
-        _newCollectionName = ""
         serialize()
+
+        if (_apiEnabled) {
+            window.fetch("/collection", object : RequestInit {
+                override var method: String? = "POST"
+                override var headers: Headers = _requestHeaders
+                override var body: dynamic = JSON.stringify(CreateCollectionRequest(_newCollectionName))
+            }).then {
+                it.json().then {
+                    console.log("Collection creation successful", it)
+                }.catch {
+                    console.error("Could not create collection", it)
+                }
+            }.catch {
+                console.error("Could not create collection", it)
+            }
+        }
+
+        _newCollectionName = ""
     }
 
     fun updateNewTodoText(text: String) = action {
@@ -148,7 +173,11 @@ class TodoStore : Store() {
                 j++
             }
 
-            collections.add(TodoCollection(collectionData.name as String, todos))
+            collections.add(TodoCollection(
+                    collectionData.name as String,
+                    todos,
+                    collectionData.id as String)
+            )
             i++
         }
 
