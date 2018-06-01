@@ -106,13 +106,20 @@ class TodoStore : Store() {
         serialize()
     }
 
+    private data class EditTodoRequest(val collectionId: String, val todoIndex: Int, val completed: Boolean)
+
     fun toggleComplete(index: Int) = action {
         val collection = selectedTodoCollection
         if (collection != null) {
             val todo = collection.todos[index]
             todo.completed = !todo.completed
+            serialize()
+
+            if (_apiEnabled) {
+                val id = selectedTodoCollection?.id ?: ""
+                patchFetch("/collection/todo", EditTodoRequest(id, index, todo.completed))
+            }
         }
-        serialize()
     }
 
     fun startDeleteCollection(index: Int) = action {

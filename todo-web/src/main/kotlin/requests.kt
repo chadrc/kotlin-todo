@@ -31,4 +31,5 @@ fun fetch(url: String, method: String, body: Any? = null, cb: Callback?) {
 }
 
 fun getFetch(url: String, cb: Callback = {}) = fetch(url, "GET", cb = cb)
-fun postFetch(url: String, body: Any, cb: Callback = {}) = fetch(url, "POST", body, cb = cb)
+fun postFetch(url: String, body: Any, cb: Callback = {}) = fetch(url, "POST", body, cb)
+fun patchFetch(url: String, body: Any, cb: Callback = {}) = fetch(url, "PATCH", body, cb)
