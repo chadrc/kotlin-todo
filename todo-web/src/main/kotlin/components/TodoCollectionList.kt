@@ -1,8 +1,8 @@
 package components
 
+import StoreResourceLoader
 import TodoCollection
 import components.styles.TodoStyles
-import connector
 import kotlinx.css.*
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
@@ -15,10 +15,15 @@ import react.RState
 import react.dom.form
 import react.dom.h3
 import styled.*
+import todoStore
 
-class TodoCollectionList : RComponent<TodoCollectionListProps, RState>() {
+class TodoCollectionList : RComponent<RProps, RState>() {
+    private val todoCollections: ArrayList<TodoCollection>
+            by StoreResourceLoader<RProps, RState, TodoCollectionList, ArrayList<TodoCollection>>()
+    private val newCollectionName: String
+            by StoreResourceLoader<RProps, RState, TodoCollectionList, String>()
+
     override fun RBuilder.render() {
-
         styledAside {
             css {
                 marginRight = 20.px
@@ -32,7 +37,7 @@ class TodoCollectionList : RComponent<TodoCollectionListProps, RState>() {
                 attrs {
                     onSubmitFunction = {
                         it.preventDefault()
-                        props.createNewCollection()
+                        todoStore.createNewCollection()
                     }
                 }
 
@@ -44,9 +49,9 @@ class TodoCollectionList : RComponent<TodoCollectionListProps, RState>() {
                     attrs {
                         onChangeFunction = {
                             val value = (it.target as HTMLInputElement).value
-                            props.updateNewCollectionName(value)
+                            todoStore.updateNewCollectionName(value)
                         }
-                        value = props.newCollectionName
+                        value = newCollectionName
                         placeholder = "New Collection"
                     }
                 }
@@ -58,7 +63,7 @@ class TodoCollectionList : RComponent<TodoCollectionListProps, RState>() {
                     padding(0.px)
                 }
 
-                props.collectionList.mapIndexed { index: Int, collection: TodoCollection ->
+                todoCollections.mapIndexed { index: Int, collection: TodoCollection ->
                     styledLi {
                         css {
                             +TodoStyles.todoCollectionListItem
@@ -71,11 +76,11 @@ class TodoCollectionList : RComponent<TodoCollectionListProps, RState>() {
 
                         deleteButton {
                             it.stopPropagation()
-                            props.startDeleteConfirmation(index)
+                            todoStore.startDeleteCollection(index)
                         }
 
                         attrs {
-                            onClickFunction = { props.onListSelected.invoke(index) }
+                            onClickFunction = { todoStore.selectTodoCollection(index) }
                         }
                     }
                 }
@@ -84,22 +89,4 @@ class TodoCollectionList : RComponent<TodoCollectionListProps, RState>() {
     }
 }
 
-class TodoCollectionListProps(
-        var collectionList: ArrayList<TodoCollection> = ArrayList(),
-        var onListSelected: ((index: Int) -> Unit) = {},
-        var newCollectionName: String = "",
-        var updateNewCollectionName: (name: String) -> Unit = {},
-        var createNewCollection: () -> Unit = {},
-        var startDeleteConfirmation: (index: Int) -> Unit = {}
-) : RProps
-
-fun RBuilder.todoCollectionList() = connector.connect(this, TodoCollectionList::class) { store ->
-    TodoCollectionListProps(
-            store.todoCollections,
-            { index: Int -> store.selectTodoCollection(index) },
-            store.newCollectionName,
-            { name: String -> store.updateNewCollectionName(name) },
-            { store.createNewCollection() },
-            { index: Int -> store.startDeleteCollection(index)}
-    )
-}
+fun RBuilder.todoCollectionList() = child(TodoCollectionList::class) {}

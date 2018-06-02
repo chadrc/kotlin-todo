@@ -1,8 +1,13 @@
 import org.w3c.fetch.RequestInit
+import react.RComponent
+import react.RProps
+import react.RState
 import store.Store
 import store.StoreConnector
 import kotlin.browser.localStorage
 import kotlin.browser.window
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
 class TodoStore : Store() {
     private enum class Resource {
@@ -203,4 +208,35 @@ class TodoStore : Store() {
     }
 }
 
-val connector = StoreConnector(TodoStore())
+class StoreResourceDelegate<P>(private val bindProp: KProperty<P>?) : ReadOnlyProperty<Any, P> {
+    override fun getValue(thisRef: Any, property: KProperty<*>): P {
+        val name = bindProp?.name ?: property.name
+        return todoStore.asDynamic()[name] as P
+    }
+}
+
+class StoreResourceLoader<Props : RProps, State : RState, T : RComponent<Props, State>, P>
+(private val bindProp: KProperty<P>? = null) {
+    init {
+        if (bindProp != null
+                && todoStore.asDynamic()[bindProp.name] == undefined) {
+            throw Exception("Property ${bindProp.name} not defined in TodoStore.")
+        }
+    }
+
+    operator fun provideDelegate(
+            thisRef: T,
+            prop: KProperty<*>
+    ): ReadOnlyProperty<T, P> {
+        if (todoStore.asDynamic()[prop.name] == undefined) {
+            throw Exception("Property ${prop.name} not defined in TodoStore.")
+        }
+
+        todoStore.addListener { thisRef.forceUpdate() }
+
+        return StoreResourceDelegate(bindProp)
+    }
+}
+
+val todoStore = TodoStore()
+val connector = StoreConnector(todoStore)
