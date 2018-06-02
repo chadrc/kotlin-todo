@@ -1,5 +1,6 @@
 package components
 
+import TodoStoreListener
 import components.styles.TodoStyles
 import kotlinx.html.js.onClickFunction
 import react.RBuilder
@@ -9,11 +10,10 @@ import react.dom.aside
 import react.dom.button
 import react.dom.h3
 import react.dom.section
-import store.RStoreListener
 import styled.css
 import styled.styledDiv
 
-class DeleteConfirmationModal : RStoreListener<RProps, RState>() {
+class DeleteConfirmationModal : TodoStoreListener<RProps, RState>() {
     override fun RBuilder.render() {
         if (store.indexToDelete != -1) {
             styledDiv {

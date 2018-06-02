@@ -1,6 +1,7 @@
 package components
 
 import Todo
+import TodoStoreListener
 import components.styles.TodoStyles
 import kotlinx.css.ListStyleType
 import kotlinx.css.padding
@@ -13,12 +14,11 @@ import react.RProps
 import react.RState
 import react.dom.form
 import react.dom.h3
-import store.RStoreListener
 import styled.css
 import styled.styledInput
 import styled.styledUl
 
-class SelectedTodo : RStoreListener<RProps, RState>() {
+class SelectedTodo : TodoStoreListener<RProps, RState>() {
     override fun RBuilder.render() {
         val selectedTodoCollection = store.selectedTodoCollection
         if (selectedTodoCollection != null) {

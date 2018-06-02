@@ -1,6 +1,7 @@
 package components
 
 import TodoCollection
+import TodoStoreListener
 import components.styles.TodoStyles
 import kotlinx.css.*
 import kotlinx.html.js.onChangeFunction
@@ -12,10 +13,9 @@ import react.RProps
 import react.RState
 import react.dom.form
 import react.dom.h3
-import store.RStoreListener
 import styled.*
 
-class TodoCollectionList : RStoreListener<RProps, RState>() {
+class TodoCollectionList : TodoStoreListener<RProps, RState>() {
     override fun RBuilder.render() {
         styledAside {
             css {
