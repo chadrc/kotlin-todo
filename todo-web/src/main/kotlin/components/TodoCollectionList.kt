@@ -1,6 +1,5 @@
 package components
 
-import StoreResourceLoader
 import TodoCollection
 import components.styles.TodoStyles
 import kotlinx.css.*
@@ -9,18 +8,14 @@ import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onSubmitFunction
 import org.w3c.dom.HTMLInputElement
 import react.RBuilder
-import react.RComponent
 import react.RProps
 import react.RState
 import react.dom.form
 import react.dom.h3
+import store.RStoreListener
 import styled.*
-import todoStore
 
-class TodoCollectionList : RComponent<RProps, RState>() {
-    private val todoCollections: ArrayList<TodoCollection>by StoreResourceLoader()
-    private val newCollectionName: String by StoreResourceLoader()
-
+class TodoCollectionList : RStoreListener<RProps, RState>() {
     override fun RBuilder.render() {
         styledAside {
             css {
@@ -35,7 +30,7 @@ class TodoCollectionList : RComponent<RProps, RState>() {
                 attrs {
                     onSubmitFunction = {
                         it.preventDefault()
-                        todoStore.createNewCollection()
+                        store.createNewCollection()
                     }
                 }
 
@@ -47,9 +42,9 @@ class TodoCollectionList : RComponent<RProps, RState>() {
                     attrs {
                         onChangeFunction = {
                             val value = (it.target as HTMLInputElement).value
-                            todoStore.updateNewCollectionName(value)
+                            store.updateNewCollectionName(value)
                         }
-                        value = newCollectionName
+                        value = store.newCollectionName
                         placeholder = "New Collection"
                     }
                 }
@@ -61,7 +56,7 @@ class TodoCollectionList : RComponent<RProps, RState>() {
                     padding(0.px)
                 }
 
-                todoCollections.mapIndexed { index: Int, collection: TodoCollection ->
+                store.todoCollections.mapIndexed { index: Int, collection: TodoCollection ->
                     styledLi {
                         css {
                             +TodoStyles.todoCollectionListItem
@@ -74,11 +69,11 @@ class TodoCollectionList : RComponent<RProps, RState>() {
 
                         deleteButton {
                             it.stopPropagation()
-                            todoStore.startDeleteCollection(index)
+                            store.startDeleteCollection(index)
                         }
 
                         attrs {
-                            onClickFunction = { todoStore.selectTodoCollection(index) }
+                            onClickFunction = { store.selectTodoCollection(index) }
                         }
                     }
                 }

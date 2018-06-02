@@ -1,12 +1,9 @@
 import org.w3c.fetch.RequestInit
-import react.RComponent
 import store.Store
 import kotlin.browser.localStorage
 import kotlin.browser.window
-import kotlin.properties.ReadOnlyProperty
-import kotlin.reflect.KProperty
 
-class TodoStore : Store() {
+object TodoStore : Store() {
     private enum class Resource {
         Collection,
         Todo
@@ -20,19 +17,9 @@ class TodoStore : Store() {
     private var _indexToDelete = -1
     private var _deleteType: Resource? = null
 
-    @Suppress("unused")
     val todoCollections: ArrayList<TodoCollection> get() = _todoCollections
-
-    @Suppress("unused")
     val newCollectionName: String get() = _newCollectionName
-
-    @Suppress("unused")
     val newTodoText: String get() = _newTodoText
-
-    @Suppress("unused")
-    val selectedCollectionIndex: Int
-        get() = _selectedTodoCollectionIndex
-
     val indexToDelete: Int get() = _indexToDelete
     val selectedTodoCollection: TodoCollection?
         get() = if (_selectedTodoCollectionIndex == -1
@@ -214,39 +201,3 @@ class TodoStore : Store() {
         )
     }
 }
-
-class StoreResourceDelegate<P>(private val bindProp: KProperty<P>?) : ReadOnlyProperty<Any, P> {
-    override fun getValue(thisRef: Any, property: KProperty<*>): P {
-        val name = bindProp?.name ?: property.name
-        return todoStore.asDynamic()[name] as P
-    }
-}
-
-class StoreResourceLoader<P>(private val bindProp: KProperty<P>? = null) {
-    init {
-        if (bindProp != null
-                && todoStore.asDynamic()[bindProp.name] == undefined) {
-            throw Exception("Property ${bindProp.name} not defined in TodoStore.")
-        }
-    }
-
-    operator fun provideDelegate(
-            thisRef: Any,
-            prop: KProperty<*>
-    ): ReadOnlyProperty<Any, P> {
-        if (todoStore.asDynamic()[prop.name] == undefined) {
-            throw Exception("Property ${prop.name} not defined in TodoStore.")
-        }
-
-        if (thisRef is RComponent<*, *> && !listenerComponents.contains(thisRef)) {
-            listenerComponents.add(thisRef)
-            todoStore.addListener { thisRef.forceUpdate() }
-        }
-
-        return StoreResourceDelegate(bindProp)
-    }
-}
-
-val listenerComponents: HashSet<Any> = HashSet()
-
-val todoStore = TodoStore()

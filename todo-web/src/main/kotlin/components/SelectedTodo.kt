@@ -1,6 +1,5 @@
 package components
 
-import StoreResourceLoader
 import Todo
 import components.styles.TodoStyles
 import kotlinx.css.ListStyleType
@@ -10,22 +9,18 @@ import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onSubmitFunction
 import org.w3c.dom.HTMLInputElement
 import react.RBuilder
-import react.RComponent
 import react.RProps
 import react.RState
 import react.dom.form
 import react.dom.h3
+import store.RStoreListener
 import styled.css
 import styled.styledInput
 import styled.styledUl
-import todoStore
 
-class SelectedTodo : RComponent<RProps, RState>() {
-    private val selectedCollectionIndex: Int by StoreResourceLoader()
-    private val newTodoText: String by StoreResourceLoader()
-
+class SelectedTodo : RStoreListener<RProps, RState>() {
     override fun RBuilder.render() {
-        val selectedTodoCollection = todoStore.selectedTodoCollection
+        val selectedTodoCollection = store.selectedTodoCollection
         if (selectedTodoCollection != null) {
             h3 {
                 +selectedTodoCollection.name
@@ -35,7 +30,7 @@ class SelectedTodo : RComponent<RProps, RState>() {
                 attrs {
                     onSubmitFunction = {
                         it.preventDefault()
-                        todoStore.createNewTodo()
+                        store.createNewTodo()
                     }
                 }
 
@@ -47,9 +42,9 @@ class SelectedTodo : RComponent<RProps, RState>() {
                     attrs {
                         onChangeFunction = {
                             val value = (it.target as HTMLInputElement).value
-                            todoStore.updateNewTodoText(value)
+                            store.updateNewTodoText(value)
                         }
-                        value = newTodoText
+                        value = store.newTodoText
                         placeholder = "New Todo"
                     }
                 }
@@ -62,7 +57,7 @@ class SelectedTodo : RComponent<RProps, RState>() {
                 }
 
                 selectedTodoCollection.todos.mapIndexed { index: Int, todo: Todo ->
-                    todoItem(todo.text, todo.completed, { todoStore.toggleComplete(index) }, { todoStore.startDeleteTodo(index) })
+                    todoItem(todo.text, todo.completed, { store.toggleComplete(index) }, { store.startDeleteTodo(index) })
                 }
             }
         }
