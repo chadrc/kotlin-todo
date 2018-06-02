@@ -2,10 +2,10 @@ package store
 
 open class Store {
 
-    private val listeners: ArrayList<StoreListener> = ArrayList()
+    private val listeners: ArrayList<StoreListenerCallback> = ArrayList()
 
-    fun addListener(listener: StoreListener) = listeners.add(listener)
-    fun removeListener(listener: StoreListener) = listeners.remove(listener)
+    fun addListener(listenerCallback: StoreListenerCallback) = listeners.add(listenerCallback)
+    fun removeListener(listenerCallback: StoreListenerCallback) = listeners.remove(listenerCallback)
 
     protected fun action(func: () -> Unit) {
         func()
