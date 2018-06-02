@@ -132,8 +132,21 @@ class TodoStore : Store() {
         _indexToDelete = index
     }
 
+    private data class DeleteCollectionRequest(val collectionId: String)
+    private data class DeleteTodoRequest(val collectionId: String, val todoIndex: Int)
+
     fun confirmDelete() = action {
-        val collection = if (_deleteType == Resource.Collection) _todoCollections else selectedTodoCollection?.todos
+        val collection: ArrayList<*>?
+        if (_deleteType == Resource.Collection) {
+            collection = _todoCollections
+            val item = _todoCollections[_indexToDelete]
+            val collectionId = item.id
+            deleteFetch("/collection", DeleteCollectionRequest(collectionId))
+        } else {
+            collection = selectedTodoCollection?.todos
+            val collectionId = selectedTodoCollection?.id ?: ""
+            deleteFetch("/collection/todo", DeleteTodoRequest(collectionId, _indexToDelete))
+        }
         collection?.removeAt(_indexToDelete)
         cancelDelete()
     }
