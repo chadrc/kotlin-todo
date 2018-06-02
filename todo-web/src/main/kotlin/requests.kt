@@ -20,11 +20,18 @@ fun fetch(url: String, method: String, body: Any? = null, cb: Callback?) {
         override var headers: Headers = RequestHeaders.headers
         override var body: dynamic = JSON.stringify(body)
     }).then {
-        it.json().then {
+        it.text().then {
             console.log("$url request successful", it)
-            cb?.invoke(it)
-        }.catch {
-            console.error("$url request failed", it)
+            if (it != "") {
+                val data = try {
+                    JSON.parse<Any>(it)
+                } catch (e: Exception) {
+                    console.error("$url request failed", it)
+                }
+                cb?.invoke(data)
+            } else {
+                cb?.invoke(it)
+            }
         }
     }.catch {
         console.error("$url request failed", it)
