@@ -34,7 +34,11 @@ class TodoStore : Store() {
         }).then {
             it.json().then {
                 _apiEnabled = true
-                this@TodoStore.initTodos(parseTodos(it))
+
+                // Inline action to invoke listeners
+                this@TodoStore.action {
+                    this._todoCollections = parseTodos(it)
+                }
             }.catch {
                 console.error(it)
             }
@@ -154,10 +158,6 @@ class TodoStore : Store() {
     fun cancelDelete() = action {
         _indexToDelete = -1
         _deleteType = null
-    }
-
-    private fun initTodos(todos: ArrayList<TodoCollection>) = action {
-        this._todoCollections = todos
     }
 
     private data class SaveData(
