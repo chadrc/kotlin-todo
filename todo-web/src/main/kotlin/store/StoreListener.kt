@@ -5,15 +5,11 @@ import react.RComponent
 import react.RProps
 import react.RState
 
-interface StoreListener {
-    fun update()
-}
-
-abstract class RStoreListener<P : RProps, S : RState> : RComponent<P, S>(), StoreListener {
+abstract class RStoreListener<P : RProps, S : RState> : RComponent<P, S>() {
     private val _store = TodoStore
     protected val store get() = _store
 
-    override fun update() {
+    private fun update() {
         this.forceUpdate()
     }
 
