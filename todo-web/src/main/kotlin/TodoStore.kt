@@ -1,7 +1,5 @@
 import org.w3c.fetch.RequestInit
 import react.RComponent
-import react.RProps
-import react.RState
 import store.Store
 import store.StoreConnector
 import kotlin.browser.localStorage
@@ -23,7 +21,10 @@ class TodoStore : Store() {
     private var _indexToDelete = -1
     private var _deleteType: Resource? = null
 
+    @Suppress("unused")
     val todoCollections: ArrayList<TodoCollection> get() = _todoCollections
+
+    @Suppress("unused")
     val newCollectionName: String get() = _newCollectionName
     val newTodoText: String get() = _newTodoText
     val indexToDelete: Int get() = _indexToDelete
@@ -215,7 +216,7 @@ class StoreResourceDelegate<P>(private val bindProp: KProperty<P>?) : ReadOnlyPr
     }
 }
 
-class StoreResourceLoader<Props : RProps, State : RState, T : RComponent<Props, State>, P>
+class StoreResourceLoader<P>
 (private val bindProp: KProperty<P>? = null) {
     init {
         if (bindProp != null
@@ -225,14 +226,16 @@ class StoreResourceLoader<Props : RProps, State : RState, T : RComponent<Props, 
     }
 
     operator fun provideDelegate(
-            thisRef: T,
+            thisRef: Any,
             prop: KProperty<*>
-    ): ReadOnlyProperty<T, P> {
+    ): ReadOnlyProperty<Any, P> {
         if (todoStore.asDynamic()[prop.name] == undefined) {
             throw Exception("Property ${prop.name} not defined in TodoStore.")
         }
 
-        todoStore.addListener { thisRef.forceUpdate() }
+        if (thisRef is RComponent<*, *>) {
+            todoStore.addListener { thisRef.forceUpdate() }
+        }
 
         return StoreResourceDelegate(bindProp)
     }

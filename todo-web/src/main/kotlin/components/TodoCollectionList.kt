@@ -18,10 +18,8 @@ import styled.*
 import todoStore
 
 class TodoCollectionList : RComponent<RProps, RState>() {
-    private val todoCollections: ArrayList<TodoCollection>
-            by StoreResourceLoader<RProps, RState, TodoCollectionList, ArrayList<TodoCollection>>()
-    private val newCollectionName: String
-            by StoreResourceLoader<RProps, RState, TodoCollectionList, String>()
+    private val todoCollections: ArrayList<TodoCollection>by StoreResourceLoader()
+    private val newCollectionName: String by StoreResourceLoader()
 
     override fun RBuilder.render() {
         styledAside {
