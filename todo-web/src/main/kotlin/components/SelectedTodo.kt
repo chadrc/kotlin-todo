@@ -1,10 +1,8 @@
 package components
 
+import StoreResourceLoader
 import Todo
-import TodoCollection
-import TodoStore
 import components.styles.TodoStyles
-import connector
 import kotlinx.css.ListStyleType
 import kotlinx.css.padding
 import kotlinx.css.px
@@ -20,19 +18,24 @@ import react.dom.h3
 import styled.css
 import styled.styledInput
 import styled.styledUl
+import todoStore
 
-class SelectedTodo : RComponent<SelectedTodoProps, RState>() {
+class SelectedTodo : RComponent<RProps, RState>() {
+    private val selectedCollectionIndex: Int by StoreResourceLoader()
+    private val newTodoText: String by StoreResourceLoader()
+
     override fun RBuilder.render() {
-        if (props.selectedTodoCollection != null) {
+        val selectedTodoCollection = todoStore.selectedTodoCollection
+        if (selectedTodoCollection != null) {
             h3 {
-                +props.selectedTodoCollection.name
+                +selectedTodoCollection.name
             }
 
             form {
                 attrs {
                     onSubmitFunction = {
                         it.preventDefault()
-                        props.createNewTodo()
+                        todoStore.createNewTodo()
                     }
                 }
 
@@ -44,9 +47,9 @@ class SelectedTodo : RComponent<SelectedTodoProps, RState>() {
                     attrs {
                         onChangeFunction = {
                             val value = (it.target as HTMLInputElement).value
-                            props.updateNewTodoText(value)
+                            todoStore.updateNewTodoText(value)
                         }
-                        value = props.newTodoText
+                        value = newTodoText
                         placeholder = "New Todo"
                     }
                 }
@@ -58,30 +61,12 @@ class SelectedTodo : RComponent<SelectedTodoProps, RState>() {
                     padding(0.px)
                 }
 
-                props.selectedTodoCollection.todos.mapIndexed { index: Int, todo: Todo ->
-                    todoItem(todo.text, todo.completed, { props.toggleComplete(index) }, { props. startDeleteTodo(index) })
+                selectedTodoCollection.todos.mapIndexed { index: Int, todo: Todo ->
+                    todoItem(todo.text, todo.completed, { todoStore.toggleComplete(index) }, { todoStore.startDeleteTodo(index) })
                 }
             }
         }
     }
 }
 
-class SelectedTodoProps(
-        val selectedTodoCollection: TodoCollection?,
-        val toggleComplete: (index: Int) -> Unit = {},
-        var newTodoText: String = "",
-        var updateNewTodoText: (text: String) -> Unit = {},
-        var createNewTodo: () -> Unit = {},
-        var startDeleteTodo: (index: Int) -> Unit = {}
-) : RProps
-
-fun RBuilder.selectedTodo() = connector.connect(this, SelectedTodo::class, { store: TodoStore ->
-    SelectedTodoProps(
-            store.selectedTodoCollection,
-            { index: Int -> store.toggleComplete(index) },
-            store.newTodoText,
-            { text: String -> store.updateNewTodoText(text) },
-            { store.createNewTodo() },
-            { index: Int -> store.startDeleteTodo(index)}
-    )
-})
+fun RBuilder.selectedTodo() = child(SelectedTodo::class) {}

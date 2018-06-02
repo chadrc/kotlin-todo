@@ -26,7 +26,14 @@ class TodoStore : Store() {
 
     @Suppress("unused")
     val newCollectionName: String get() = _newCollectionName
+
+    @Suppress("unused")
     val newTodoText: String get() = _newTodoText
+
+    @Suppress("unused")
+    val selectedCollectionIndex: Int
+        get() = _selectedTodoCollectionIndex
+
     val indexToDelete: Int get() = _indexToDelete
     val selectedTodoCollection: TodoCollection?
         get() = if (_selectedTodoCollectionIndex == -1
@@ -216,8 +223,7 @@ class StoreResourceDelegate<P>(private val bindProp: KProperty<P>?) : ReadOnlyPr
     }
 }
 
-class StoreResourceLoader<P>
-(private val bindProp: KProperty<P>? = null) {
+class StoreResourceLoader<P>(private val bindProp: KProperty<P>? = null) {
     init {
         if (bindProp != null
                 && todoStore.asDynamic()[bindProp.name] == undefined) {
@@ -233,13 +239,16 @@ class StoreResourceLoader<P>
             throw Exception("Property ${prop.name} not defined in TodoStore.")
         }
 
-        if (thisRef is RComponent<*, *>) {
+        if (thisRef is RComponent<*, *> && !listenerComponents.contains(thisRef)) {
+            listenerComponents.add(thisRef)
             todoStore.addListener { thisRef.forceUpdate() }
         }
 
         return StoreResourceDelegate(bindProp)
     }
 }
+
+val listenerComponents: HashSet<Any> = HashSet()
 
 val todoStore = TodoStore()
 val connector = StoreConnector(todoStore)
