@@ -1,7 +1,7 @@
 package components
 
+import StoreResourceLoader
 import components.styles.TodoStyles
-import connector
 import kotlinx.html.js.onClickFunction
 import react.RBuilder
 import react.RComponent
@@ -13,10 +13,13 @@ import react.dom.h3
 import react.dom.section
 import styled.css
 import styled.styledDiv
+import todoStore
 
-class DeleteConfirmationModal : RComponent<DeleteConfirmationModalProps, RState>() {
+class DeleteConfirmationModal : RComponent<RProps, RState>() {
+    private val indexToDelete: Int by StoreResourceLoader()
+
     override fun RBuilder.render() {
-        if (props.confirmingDelete) {
+        if (indexToDelete != -1) {
             styledDiv {
                 css {
                     +TodoStyles.modal
@@ -33,7 +36,7 @@ class DeleteConfirmationModal : RComponent<DeleteConfirmationModalProps, RState>
                             +"Cancel"
 
                             attrs {
-                                onClickFunction = { props.cancelDelete() }
+                                onClickFunction = { todoStore.cancelDelete() }
                             }
                         }
 
@@ -41,7 +44,7 @@ class DeleteConfirmationModal : RComponent<DeleteConfirmationModalProps, RState>
                             +"Yes"
 
                             attrs {
-                                onClickFunction = { props.confirmDelete() }
+                                onClickFunction = { todoStore.confirmDelete() }
                             }
                         }
                     }
@@ -51,16 +54,4 @@ class DeleteConfirmationModal : RComponent<DeleteConfirmationModalProps, RState>
     }
 }
 
-class DeleteConfirmationModalProps(
-        var confirmingDelete: Boolean = false,
-        var confirmDelete: () -> Unit,
-        var cancelDelete: () -> Unit
-) : RProps
-
-fun RBuilder.deleteConfirmationModal() = connector.connect(this, DeleteConfirmationModal::class) { store ->
-    DeleteConfirmationModalProps(
-            store.indexToDelete != -1,
-            { store.confirmDelete() },
-            { store.cancelDelete() }
-    )
-}
+fun RBuilder.deleteConfirmationModal() = child(DeleteConfirmationModal::class) {}

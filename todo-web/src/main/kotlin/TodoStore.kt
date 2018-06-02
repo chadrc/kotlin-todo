@@ -1,7 +1,6 @@
 import org.w3c.fetch.RequestInit
 import react.RComponent
 import store.Store
-import store.StoreConnector
 import kotlin.browser.localStorage
 import kotlin.browser.window
 import kotlin.properties.ReadOnlyProperty
@@ -251,4 +250,3 @@ class StoreResourceLoader<P>(private val bindProp: KProperty<P>? = null) {
 val listenerComponents: HashSet<Any> = HashSet()
 
 val todoStore = TodoStore()
-val connector = StoreConnector(todoStore)
